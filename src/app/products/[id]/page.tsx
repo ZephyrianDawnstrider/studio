@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback, use } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
@@ -17,10 +17,11 @@ import { Button } from '@/components/ui/button';
 import { ArrowLeft, Trash2, CreditCard } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
-export default function ProductPage({ params }: { params: { id: string } }) {
+export default function ProductPage({ params }: { params: Promise<{ id: string }> }) {
   const [selectedPeripherals, setSelectedPeripherals] = useState<Product[]>([]);
+  const { id } = use(params);
 
-  const featuredLaptop = laptopData.find((p) => p.id === params.id);
+  const featuredLaptop = laptopData.find((p) => p.id === id);
 
   if (!featuredLaptop) {
     notFound();
