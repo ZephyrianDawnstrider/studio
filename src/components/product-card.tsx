@@ -1,23 +1,22 @@
+
 "use client";
 
 import Image from 'next/image';
-import Link from 'next/link';
-import { ExternalLink } from 'lucide-react';
+import { CheckCircle2 } from 'lucide-react';
 
 import type { Product } from '@/lib/types';
-import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
-import { Switch } from '@/components/ui/switch';
-import { Badge } from '@/components/ui/badge';
+import { cn } from '@/lib/utils';
 
 interface ProductCardProps {
   product: Product;
   isSelected: boolean;
   onSelect: (product: Product, selected: boolean) => void;
+  isClickable?: boolean;
 }
 
-export function ProductCard({ product, isSelected, onSelect }: ProductCardProps) {
+export function ProductCard({ product, isSelected, onSelect, isClickable = true }: ProductCardProps) {
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-IN', {
       style: 'currency',
@@ -26,9 +25,27 @@ export function ProductCard({ product, isSelected, onSelect }: ProductCardProps)
     }).format(amount);
   };
 
+  const handleCardClick = () => {
+    if (isClickable) {
+      onSelect(product, !isSelected);
+    }
+  };
+
   return (
-    <Card className="flex flex-col overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
-      <CardHeader className="p-0">
+    <Card 
+      className={cn(
+        "flex flex-col overflow-hidden transition-all duration-300",
+        isClickable && "cursor-pointer hover:shadow-xl hover:-translate-y-1",
+        isSelected && "ring-2 ring-primary"
+      )}
+      onClick={handleCardClick}
+    >
+      <CardHeader className="p-0 relative">
+        {isSelected && (
+          <div className="absolute top-2 right-2 z-10 bg-primary rounded-full text-primary-foreground">
+            <CheckCircle2 className="h-6 w-6" />
+          </div>
+        )}
         <div className="relative h-48 w-full">
           <Image
             src={product.imageUrl}
@@ -58,25 +75,6 @@ export function ProductCard({ product, isSelected, onSelect }: ProductCardProps)
           ))}
         </ul>
       </CardContent>
-      <CardFooter className="bg-secondary/30 p-4 flex justify-between items-center">
-        <div className="flex items-center space-x-2">
-          <Switch
-            id={`select-${product.id}`}
-            checked={isSelected}
-            onCheckedChange={(checked) => onSelect(product, checked)}
-            aria-label={`Select ${product.name}`}
-          />
-          <label htmlFor={`select-${product.id}`} className="text-sm font-medium">
-            Select
-          </label>
-        </div>
-        <Button asChild variant="ghost" size="sm">
-          <Link href={product.url} target="_blank" rel="noopener noreferrer">
-            View Product
-            <ExternalLink className="ml-2 h-4 w-4" />
-          </Link>
-        </Button>
-      </CardFooter>
     </Card>
   );
 }
