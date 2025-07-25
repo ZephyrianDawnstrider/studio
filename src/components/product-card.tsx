@@ -35,7 +35,7 @@ export function ProductCard({ product, isSelected, onSelect, isClickable = true 
   return (
     <Card 
       className={cn(
-        "flex flex-col overflow-hidden transition-all duration-300",
+        "flex flex-col h-full overflow-hidden transition-all duration-300",
         isClickable && "cursor-pointer hover:shadow-xl hover:-translate-y-1",
         isSelected && "ring-2 ring-primary"
       )}

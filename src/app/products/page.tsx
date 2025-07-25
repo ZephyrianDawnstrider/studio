@@ -1,4 +1,6 @@
 
+"use client";
+
 import Link from 'next/link';
 import { laptopData } from '@/lib/data';
 import { ProductCard } from '@/components/product-card';
@@ -27,7 +29,7 @@ export default function ProductsPage() {
                 product={laptop}
                 isSelected={false}
                 onSelect={() => {}}
-                isClickable={true}
+                isClickable={false}
               />
             </Link>
           ))}
