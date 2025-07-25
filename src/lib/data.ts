@@ -8,7 +8,7 @@ export const laptopData: Product[] = [
     name: 'Legion Pro 7 Intel',
     price: 265843.0,
     url: 'https://www.lenovo.com/in/en/configurator/cto/index.html?bundleId=83F5CTO1WWIN1',
-    imageUrl: 'https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?q=80&w=2070&auto=format&fit=crop',
+    imageUrl: 'https://images.unsplash.com/photo-1593642702821-c8da6771f0c6?q=80&w=2069&auto=format&fit=crop',
     dataAiHint: 'gaming laptop',
     specs: [
       { name: 'CPU', value: 'Intel Core Ultra', icon: 'Cpu' },
@@ -24,7 +24,7 @@ export const laptopData: Product[] = [
     name: 'Lenovo Legion 5 15IRX9',
     price: 122990.0,
     url: 'https://www.croma.com/lenovo-legion-5-15irx9-intel-core-i7-13th-gen-gaming-laptop-24gb-512gb-ssd-windows-11-home-8gb-graphics-15-6-inch-144-hz-full-hd-ips-display-nvidia-geforce-rtx-4060-ms-office-home-2024-storm-grey-2-32-kg-/p/315212',
-    imageUrl: 'https://images.unsplash.com/photo-1593642634315-48f5414c3ad9?q=80&w=2069&auto=format&fit=crop',
+    imageUrl: 'https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?q=80&w=2070&auto=format&fit=crop',
     dataAiHint: 'gaming laptop',
     specs: [
       { name: 'CPU', value: 'Intel Core i7 13th Gen', icon: 'Cpu' },
@@ -182,3 +182,5 @@ export const peripheralData: Product[] = [
     },
   },
 ];
+
+    

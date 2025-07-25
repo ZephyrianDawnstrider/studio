@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import { useState, useMemo, useCallback, use, useEffect } from 'react';
@@ -17,6 +18,7 @@ import { Button } from '@/components/ui/button';
 import { ArrowLeft, Trash2, CreditCard } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { suggestLaptops } from '@/ai/flows/laptop-suggestion-flow';
+import './product-page.css';
 
 export default function ProductPage({ params }: { params: Promise<{ id: string }> }) {
   const [selectedPeripherals, setSelectedPeripherals] = useState<Product[]>([]);
@@ -29,7 +31,6 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
     if (featuredLaptop) {
       suggestLaptops({ price: featuredLaptop.price })
         .then(response => {
-          // Filter out the featured laptop from the suggestions
           const filteredSuggestions = response.suggestions.filter(
             (suggestion: Product) => suggestion.id !== featuredLaptop.id
           );
@@ -87,147 +88,154 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
   const comparisonLaptops = [featuredLaptop, ...suggestedLaptops.slice(0, 2)];
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <main className="container mx-auto px-4 py-8">
-        <header className="mb-12">
-          <Link href="/products" className="inline-flex items-center text-sm text-muted-foreground hover:text-primary mb-4">
-            <Button variant="outline" size="sm">
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Back to Laptops
-            </Button>
-          </Link>
-          <h1 className="text-4xl md:text-5xl font-bold font-headline text-primary tracking-tight">
-            {featuredLaptop.name}
-          </h1>
-        </header>
-        
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
-          <div className="lg:col-span-2 space-y-12">
-            <section>
-              <Card>
-                <CardContent className="p-6">
-                  <div className="grid md:grid-cols-2 gap-6">
-                    <div className="relative h-64 w-full rounded-lg overflow-hidden">
-                      <Image
-                        src={featuredLaptop.imageUrl}
-                        alt={featuredLaptop.name}
-                        fill
-                        className="object-cover"
-                        data-ai-hint={featuredLaptop.dataAiHint}
-                      />
+    <div 
+      className="min-h-screen bg-background text-foreground product-page-background"
+      style={{'--bg-image': `url(${featuredLaptop.imageUrl})`} as React.CSSProperties}
+    >
+      <div className="backdrop-blur-sm bg-background/80 min-h-screen">
+        <main className="container mx-auto px-4 py-8">
+          <header className="mb-12">
+            <Link href="/products" className="inline-flex items-center text-sm text-muted-foreground hover:text-primary mb-4">
+              <Button variant="outline" size="sm">
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                Back to Laptops
+              </Button>
+            </Link>
+            <h1 className="text-4xl md:text-5xl font-bold font-headline text-primary-foreground drop-shadow-lg tracking-tight">
+              {featuredLaptop.name}
+            </h1>
+          </header>
+          
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+            <div className="lg:col-span-2 space-y-12">
+              <section>
+                <Card className="bg-card/80 backdrop-blur-sm">
+                  <CardContent className="p-6">
+                    <div className="grid md:grid-cols-2 gap-6">
+                      <div className="relative h-64 w-full rounded-lg overflow-hidden shadow-lg">
+                        <Image
+                          src={featuredLaptop.imageUrl}
+                          alt={featuredLaptop.name}
+                          fill
+                          className="object-cover"
+                          data-ai-hint={featuredLaptop.dataAiHint}
+                        />
+                      </div>
+                      <div>
+                        <h2 className="text-2xl font-bold font-headline">{featuredLaptop.name}</h2>
+                        <p className="text-3xl font-bold text-primary mt-2 mb-4">
+                          {formatCurrency(featuredLaptop.price)}
+                        </p>
+                        <Separator />
+                        <ul className="space-y-3 text-sm text-muted-foreground mt-4">
+                          {featuredLaptop.specs.map((spec) => {
+                            const Icon = icons[spec.icon as keyof typeof icons] as icons.LucideIcon;
+                            return (
+                              <li key={spec.name} className="flex items-center gap-3">
+                                {Icon && <Icon className="h-5 w-5 text-accent" />}
+                                <span>
+                                  <span className="font-semibold text-foreground">{spec.name}:</span> {spec.value}
+                                </span>
+                              </li>
+                            );
+                          })}
+                        </ul>
+                      </div>
                     </div>
-                    <div>
-                      <h2 className="text-2xl font-bold font-headline">{featuredLaptop.name}</h2>
-                      <p className="text-3xl font-bold text-primary mt-2 mb-4">
-                        {formatCurrency(featuredLaptop.price)}
-                      </p>
-                      <Separator />
-                      <ul className="space-y-3 text-sm text-muted-foreground mt-4">
-                        {featuredLaptop.specs.map((spec) => {
-                          const Icon = icons[spec.icon as keyof typeof icons] as icons.LucideIcon;
-                          return (
-                            <li key={spec.name} className="flex items-center gap-3">
-                              {Icon && <Icon className="h-5 w-5 text-accent" />}
-                              <span>
-                                <span className="font-semibold text-foreground">{spec.name}:</span> {spec.value}
-                              </span>
+                  </CardContent>
+                </Card>
+              </section>
+              <section>
+                <h2 className="text-3xl font-headline font-bold mb-6 text-primary-foreground drop-shadow-md">Add Peripherals</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {peripheralData.map((peripheral) => (
+                    <ProductCard
+                      key={peripheral.id}
+                      product={peripheral}
+                      isSelected={selectedPeripherals.some((p) => p.id === peripheral.id)}
+                      onSelect={handleSelectPeripheral}
+                      isClickable={true}
+                    />
+                  ))}
+                </div>
+              </section>
+            </div>
+
+            <div className="lg:col-span-1 sticky top-8">
+              <Card className="shadow-lg bg-card/80 backdrop-blur-sm">
+                <CardHeader>
+                  <CardTitle className="font-headline text-2xl">Your Setup</CardTitle>
+                  <CardDescription>Your custom configuration.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {selectedPeripherals.length > 0 ? (
+                    <>
+                      <ScrollArea className="h-48 pr-4">
+                        <ul className="space-y-3">
+                          {allSelectedItems.map(item => (
+                            <li key={item.id} className="flex justify-between items-center text-sm">
+                              <span className="font-medium truncate pr-2">{item.name}</span>
+                              <span className="font-mono text-primary whitespace-nowrap">{formatCurrency(item.price)}</span>
                             </li>
-                          );
-                        })}
-                      </ul>
+                          ))}
+                        </ul>
+                      </ScrollArea>
+                      <Button variant="ghost" size="sm" className="mt-2 text-destructive hover:text-destructive" onClick={clearSelection}>
+                        <Trash2 className="mr-2 h-4 w-4" />
+                        Clear Peripherals
+                      </Button>
+                    </>
+                  ) : (
+                    <div className="text-center py-10">
+                      <p className="text-sm text-muted-foreground">Your chosen laptop is shown here.</p>
+                       <ul className="space-y-3 mt-4">
+                          <li className="flex justify-between items-center text-sm">
+                              <span className="font-medium truncate pr-2">{featuredLaptop.name}</span>
+                              <span className="font-mono text-primary whitespace-nowrap">{formatCurrency(featuredLaptop.price)}</span>
+                          </li>
+                        </ul>
+                    </div>
+                  )}
+                  
+                  <Separator className="my-4" />
+
+                  <div className="space-y-2">
+                    <div className="flex justify-between items-baseline font-bold text-lg">
+                      <span>Total Cost</span>
+                      <span className="font-mono text-2xl text-primary">{formatCurrency(totalCost)}</span>
                     </div>
                   </div>
+                   {totalEmi[12] > 0 && (
+                     <Card className="bg-secondary/30 dark:bg-card mt-4">
+                        <CardHeader className="p-4">
+                          <CardTitle className="text-base flex items-center gap-2">
+                            <CreditCard className="text-accent" />
+                            EMI for Peripherals
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent className="p-4 pt-0 text-sm">
+                          <div className="flex justify-between"><span>12 Months:</span> <span className="font-mono">{formatCurrency(totalEmi[12])}/mo</span></div>
+                          <div className="flex justify-between"><span>18 Months:</span> <span className="font-mono">{formatCurrency(totalEmi[18])}/mo</span></div>
+                          <div className="flex justify-between"><span>24 Months:</span> <span className="font-mono">{formatCurrency(totalEmi[24])}/mo</span></div>
+                        </CardContent>
+                      </Card>
+                  )}
+
+                  {selectedPeripherals.length > 0 && <FinancingRecommendation totalCost={totalCost} />}
                 </CardContent>
               </Card>
-            </section>
-            <section>
-              <h2 className="text-3xl font-headline font-bold mb-6">Add Peripherals</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {peripheralData.map((peripheral) => (
-                  <ProductCard
-                    key={peripheral.id}
-                    product={peripheral}
-                    isSelected={selectedPeripherals.some((p) => p.id === peripheral.id)}
-                    onSelect={handleSelectPeripheral}
-                    isClickable={true}
-                  />
-                ))}
-              </div>
-            </section>
+            </div>
           </div>
-
-          <div className="lg:col-span-1 sticky top-8">
-            <Card className="shadow-lg">
-              <CardHeader>
-                <CardTitle className="font-headline text-2xl">Your Setup</CardTitle>
-                <CardDescription>Your custom configuration.</CardDescription>
-              </CardHeader>
-              <CardContent>
-                {selectedPeripherals.length > 0 ? (
-                  <>
-                    <ScrollArea className="h-48 pr-4">
-                      <ul className="space-y-3">
-                        {allSelectedItems.map(item => (
-                          <li key={item.id} className="flex justify-between items-center text-sm">
-                            <span className="font-medium truncate pr-2">{item.name}</span>
-                            <span className="font-mono text-primary whitespace-nowrap">{formatCurrency(item.price)}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </ScrollArea>
-                    <Button variant="ghost" size="sm" className="mt-2 text-destructive hover:text-destructive" onClick={clearSelection}>
-                      <Trash2 className="mr-2 h-4 w-4" />
-                      Clear Peripherals
-                    </Button>
-                  </>
-                ) : (
-                  <div className="text-center py-10">
-                    <p className="text-sm text-muted-foreground">Your chosen laptop is shown here.</p>
-                     <ul className="space-y-3 mt-4">
-                        <li className="flex justify-between items-center text-sm">
-                            <span className="font-medium truncate pr-2">{featuredLaptop.name}</span>
-                            <span className="font-mono text-primary whitespace-nowrap">{formatCurrency(featuredLaptop.price)}</span>
-                        </li>
-                      </ul>
-                  </div>
-                )}
-                
-                <Separator className="my-4" />
-
-                <div className="space-y-2">
-                  <div className="flex justify-between items-baseline font-bold text-lg">
-                    <span>Total Cost</span>
-                    <span className="font-mono text-2xl text-primary">{formatCurrency(totalCost)}</span>
-                  </div>
-                </div>
-                 {totalEmi[12] > 0 && (
-                   <Card className="bg-secondary/30 dark:bg-card mt-4">
-                      <CardHeader className="p-4">
-                        <CardTitle className="text-base flex items-center gap-2">
-                          <CreditCard className="text-accent" />
-                          EMI for Peripherals
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent className="p-4 pt-0 text-sm">
-                        <div className="flex justify-between"><span>12 Months:</span> <span className="font-mono">{formatCurrency(totalEmi[12])}/mo</span></div>
-                        <div className="flex justify-between"><span>18 Months:</span> <span className="font-mono">{formatCurrency(totalEmi[18])}/mo</span></div>
-                        <div className="flex justify-between"><span>24 Months:</span> <span className="font-mono">{formatCurrency(totalEmi[24])}/mo</span></div>
-                      </CardContent>
-                    </Card>
-                )}
-
-                {selectedPeripherals.length > 0 && <FinancingRecommendation totalCost={totalCost} />}
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-        
-        {selectedPeripherals.length > 0 && (
-          <div className="mt-12">
-            <ComparisonTable laptops={comparisonLaptops} />
-          </div>
-        )}
-      </main>
+          
+          {selectedPeripherals.length > 0 && (
+            <div className="mt-12">
+              <ComparisonTable laptops={comparisonLaptops} />
+            </div>
+          )}
+        </main>
+      </div>
     </div>
   );
 }
+
+    
