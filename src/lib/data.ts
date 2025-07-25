@@ -127,7 +127,7 @@ export const peripheralData: Product[] = [
     name: 'Razer Basilisk V3 Pro',
     price: 12000.0,
     url: 'https://amzn.in/d/8uCb0lI',
-    imageUrl: 'https://assets3.razerzone.com/iomNJdsE_87L3a9xS2v32gMSo7A=/1500x1000/https/media.razer.com/bli/razer-basilisk-v3-pro-white-1500x1000-1.png',
+    imageUrl: 'https://assets3.razerzone.com/gY9bmyG4gY6fJc3Y1j8aPjIuY_4=/1500x1000/https/media.razer.com/bli/razer-basilisk-v3-pro-white-1500x1000-1.png',
     dataAiHint: 'gaming mouse',
     specs: [
         { name: 'Type', value: 'Wireless Mouse', icon: 'Mouse' },
