@@ -8,7 +8,7 @@ export const laptopData: Product[] = [
     name: 'Legion Pro 7 Intel',
     price: 265843.0,
     url: 'https://www.lenovo.com/in/en/configurator/cto/index.html?bundleId=83F5CTO1WWIN1',
-    imageUrl: 'https://placehold.co/600x400.png',
+    imageUrl: 'https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?q=80&w=2070&auto=format&fit=crop',
     dataAiHint: 'gaming laptop',
     specs: [
       { name: 'CPU', value: 'Intel Core Ultra', icon: 'Cpu' },
@@ -24,7 +24,7 @@ export const laptopData: Product[] = [
     name: 'Lenovo Legion 5 15IRX9',
     price: 122990.0,
     url: 'https://www.croma.com/lenovo-legion-5-15irx9-intel-core-i7-13th-gen-gaming-laptop-24gb-512gb-ssd-windows-11-home-8gb-graphics-15-6-inch-144-hz-full-hd-ips-display-nvidia-geforce-rtx-4060-ms-office-home-2024-storm-grey-2-32-kg-/p/315212',
-    imageUrl: 'https://placehold.co/600x400.png',
+    imageUrl: 'https://images.unsplash.com/photo-1593642634315-48f5414c3ad9?q=80&w=2069&auto=format&fit=crop',
     dataAiHint: 'gaming laptop',
     specs: [
       { name: 'CPU', value: 'Intel Core i7 13th Gen', icon: 'Cpu' },
@@ -40,7 +40,7 @@ export const laptopData: Product[] = [
     name: 'MSI Sword 16 HX',
     price: 139990.0,
     url: 'https://www.croma.com/msi-sword-16-hx-b14vfkg-287in-intel-core-i9-14th-gen-gaming-laptop-16gb-1tb-ssd-windows-11-home-8gb-graphics-16-inch-144-hz-fhd-plusips-level-display-nvidia-geforce-rtx-4060-ms-office-2021-cosmos-gray-2-3-kg-/p/306667',
-    imageUrl: 'https://placehold.co/600x400.png',
+    imageUrl: 'https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?q=80&w=1770&auto=format&fit=crop',
     dataAiHint: 'laptop computer',
     specs: [
       { name: 'CPU', value: 'Intel Core i9 14th Gen', icon: 'Cpu' },
@@ -56,7 +56,7 @@ export const laptopData: Product[] = [
     name: 'HP Omen 16 xd0020AX',
     price: 104490.0,
     url: 'https://www.croma.com/hp-omen-16-xd0020ax-amd-ryzen-7-gaming-laptop-16gb-1tb-ssd-windows-11-home-8gb-graphics-16-1-inch-165-hz-fhd-display-nvidia-geforce-rtx-4060-ms-office-2021-shadow-black-2-37-kg-/p/307123',
-    imageUrl: 'https://placehold.co/600x400.png',
+    imageUrl: 'https://images.unsplash.com/photo-1554415707-6e8cfc93fe23?q=80&w=1770&auto=format&fit=crop',
     dataAiHint: 'omen laptop',
     specs: [
       { name: 'CPU', value: 'AMD Ryzen 7', icon: 'Cpu' },
@@ -72,7 +72,7 @@ export const laptopData: Product[] = [
     name: 'Lenovo LOQ Gen 9',
     price: 94990.0,
     url: 'https://www.lenovo.com/in/en/p/laptops/loq-laptops/lenovo-loq-15arp9/83jc00ehin',
-    imageUrl: 'https://placehold.co/600x400.png',
+    imageUrl: 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?q=80&w=1770&auto=format&fit=crop',
     dataAiHint: 'lenovo laptop',
     specs: [
       { name: 'CPU', value: 'AMD Ryzen 7', icon: 'Cpu' },
@@ -88,7 +88,7 @@ export const laptopData: Product[] = [
     name: 'Alienware 16 Aurora',
     price: 132789.98,
     url: 'https://www.dell.com/en-in/shop/gaming-and-games/alienware-16-aurora-gaming-laptop/spd/alienware-aurora-ac16250-gaming-laptop/oan1625000901mino',
-    imageUrl: 'https://placehold.co/600x400.png',
+    imageUrl: 'https://images.unsplash.com/photo-1603302576837-37561b2e2302?q=80&w=1768&auto=format&fit=crop',
     dataAiHint: 'alienware laptop',
     specs: [
       { name: 'CPU', value: 'Intel Core i7', icon: 'Cpu' },
@@ -107,11 +107,13 @@ export const peripheralData: Product[] = [
     name: 'ThinkVision M14t Gen 2',
     price: 29990.0,
     url: 'https://www.lenovo.com/in/en/p/accessories-and-software/monitors/office/63fduar6ww',
-    imageUrl: 'https://placehold.co/600x400.png',
+    imageUrl: 'https://images.unsplash.com/photo-1593640408182-31c70c8268f5?q=80&w=1770&auto=format&fit=crop',
     dataAiHint: 'portable monitor',
     specs: [
       { name: 'Type', value: 'Portable Monitor', icon: 'Monitor' },
-      { name: 'Size', value: '14 inch Touch', icon: 'Monitor' },
+      { name: 'Size', value: '14 inch Touch', icon: 'MonitorSmartphone' },
+      { name: 'Resolution', value: '2240x1400', icon: 'Maximize' },
+      { name: 'Refresh Rate', value: '60Hz', icon: 'RefreshCw' },
     ],
     emi: {
       12: 2664.58,
@@ -125,9 +127,14 @@ export const peripheralData: Product[] = [
     name: 'Razer Basilisk V3 Pro',
     price: 12000.0,
     url: 'https://amzn.in/d/8uCb0lI',
-    imageUrl: 'https://placehold.co/600x400.png',
+    imageUrl: 'https://images.unsplash.com/photo-1615663249892-96c6b34934a3?q=80&w=1887&auto=format&fit=crop',
     dataAiHint: 'gaming mouse',
-    specs: [{ name: 'Type', value: 'Wireless Mouse', icon: 'Mouse' }],
+    specs: [
+        { name: 'Type', value: 'Wireless Mouse', icon: 'Mouse' },
+        { name: 'Sensor', value: 'Optical', icon: 'Scan' },
+        { name: 'DPI', value: '30,000', icon: 'Gauge' },
+        { name: 'Buttons', value: '11 Programmable', icon: 'RectangleHorizontal' },
+    ],
     emi: {
       12: 1066.19,
       18: 731.78,
@@ -140,9 +147,14 @@ export const peripheralData: Product[] = [
     name: 'Hive65 Mechanical Keyboard',
     price: 3000.0,
     url: 'https://kreo-tech.com/collections/keys-to-victory/products/hive65-mechanical-gaming-keyboard-with-kreo-purple-switches',
-    imageUrl: 'https://placehold.co/600x400.png',
+    imageUrl: 'https://images.unsplash.com/photo-1618384887924-c976b7a73a53?q=80&w=1770&auto=format&fit=crop',
     dataAiHint: 'mechanical keyboard',
-    specs: [{ name: 'Type', value: 'Mechanical Keyboard', icon: 'Keyboard' }],
+    specs: [
+        { name: 'Type', value: 'Mechanical Keyboard', icon: 'Keyboard' },
+        { name: 'Switch', value: 'Kreo Purple Switches', icon: 'ToggleLeft' },
+        { name: 'Layout', value: '65% Compact', icon: 'LayoutGrid' },
+        { name: 'Backlight', value: 'RGB', icon: 'Zap' },
+    ],
     emi: {
       12: 266.55,
       18: 182.95,
@@ -155,9 +167,14 @@ export const peripheralData: Product[] = [
     name: 'Arctik Laptop Cooler',
     price: 3000.0,
     url: 'https://kreo-tech.com/products/arctik-laptop-cooler',
-    imageUrl: 'https://placehold.co/600x400.png',
+    imageUrl: 'https://images.unsplash.com/photo-1565299585323-21d1d1437144?q=80&w=1932&auto=format&fit=crop',
     dataAiHint: 'laptop cooler',
-    specs: [{ name: 'Type', value: 'Cooling Pad', icon: 'Fan' }],
+    specs: [
+        { name: 'Type', value: 'Cooling Pad', icon: 'Fan' },
+        { name: 'Fan Speed', value: 'Up to 2400 RPM', icon: 'Gauge' },
+        { name: 'Noise Level', value: '25 dBA', icon: 'Volume2' },
+        { name: 'Lighting', value: 'RGB', icon: 'Zap' },
+    ],
     emi: {
       12: 266.55,
       18: 182.95,

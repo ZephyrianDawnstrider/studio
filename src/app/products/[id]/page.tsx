@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useMemo, useCallback, use } from 'react';
+import { useState, useMemo, useCallback, use, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
@@ -16,12 +16,30 @@ import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Trash2, CreditCard } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { suggestLaptops } from '@/ai/flows/laptop-suggestion-flow';
 
 export default function ProductPage({ params }: { params: Promise<{ id: string }> }) {
   const [selectedPeripherals, setSelectedPeripherals] = useState<Product[]>([]);
+  const [suggestedLaptops, setSuggestedLaptops] = useState<Product[]>([]);
   const { id } = use(params);
 
   const featuredLaptop = laptopData.find((p) => p.id === id);
+
+  useEffect(() => {
+    if (featuredLaptop) {
+      suggestLaptops({ price: featuredLaptop.price })
+        .then(response => {
+          // Filter out the featured laptop from the suggestions
+          const filteredSuggestions = response.suggestions.filter(
+            (suggestion: Product) => suggestion.id !== featuredLaptop.id
+          );
+          setSuggestedLaptops(filteredSuggestions);
+        })
+        .catch(error => {
+          console.error("Failed to fetch suggested laptops:", error);
+        });
+    }
+  }, [featuredLaptop]);
 
   if (!featuredLaptop) {
     notFound();
@@ -65,7 +83,8 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
   };
 
   const allSelectedItems = [featuredLaptop, ...selectedPeripherals];
-  const otherLaptops = laptopData.filter(laptop => laptop.id !== featuredLaptop.id);
+  
+  const comparisonLaptops = [featuredLaptop, ...suggestedLaptops.slice(0, 2)];
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -205,7 +224,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
         
         {selectedPeripherals.length > 0 && (
           <div className="mt-12">
-            <ComparisonTable laptops={[featuredLaptop, ...otherLaptops.slice(0, 2)]} />
+            <ComparisonTable laptops={comparisonLaptops} />
           </div>
         )}
       </main>
