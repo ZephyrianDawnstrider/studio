@@ -1,15 +1,4 @@
 
-import {
-  Cpu,
-  HardDrive,
-  MemoryStick,
-  Monitor,
-  Mouse,
-  Keyboard,
-  Fan,
-  Component,
-  Laptop,
-} from 'lucide-react';
 import type { Product } from './types';
 
 export const laptopData: Product[] = [
@@ -22,11 +11,11 @@ export const laptopData: Product[] = [
     imageUrl: 'https://placehold.co/600x400.png',
     dataAiHint: 'gaming laptop',
     specs: [
-      { name: 'CPU', value: 'Intel Core Ultra', icon: Cpu },
-      { name: 'GPU', value: 'NVIDIA RTX 4080', icon: Component },
-      { name: 'RAM', value: '32GB DDR5', icon: MemoryStick },
-      { name: 'Storage', value: '2TB SSD', icon: HardDrive },
-      { name: 'Display', value: '16" WQXGA', icon: Laptop },
+      { name: 'CPU', value: 'Intel Core Ultra', icon: 'Cpu' },
+      { name: 'GPU', value: 'NVIDIA RTX 4080', icon: 'Component' },
+      { name: 'RAM', value: '32GB DDR5', icon: 'MemoryStick' },
+      { name: 'Storage', value: '2TB SSD', icon: 'HardDrive' },
+      { name: 'Display', value: '16" WQXGA', icon: 'Laptop' },
     ],
   },
   {
@@ -38,11 +27,11 @@ export const laptopData: Product[] = [
     imageUrl: 'https://placehold.co/600x400.png',
     dataAiHint: 'gaming laptop',
     specs: [
-      { name: 'CPU', value: 'Intel Core i7 13th Gen', icon: Cpu },
-      { name: 'GPU', value: 'NVIDIA RTX 4060', icon: Component },
-      { name: 'RAM', value: '24GB DDR5', icon: MemoryStick },
-      { name: 'Storage', value: '512GB SSD', icon: HardDrive },
-      { name: 'Display', value: '15.6" FHD 144Hz', icon: Laptop },
+      { name: 'CPU', value: 'Intel Core i7 13th Gen', icon: 'Cpu' },
+      { name: 'GPU', value: 'NVIDIA RTX 4060', icon: 'Component' },
+      { name: 'RAM', value: '24GB DDR5', icon: 'MemoryStick' },
+      { name: 'Storage', value: '512GB SSD', icon: 'HardDrive' },
+      { name: 'Display', value: '15.6" FHD 144Hz', icon: 'Laptop' },
     ],
   },
   {
@@ -54,11 +43,11 @@ export const laptopData: Product[] = [
     imageUrl: 'https://placehold.co/600x400.png',
     dataAiHint: 'laptop computer',
     specs: [
-      { name: 'CPU', value: 'Intel Core i9 14th Gen', icon: Cpu },
-      { name: 'GPU', value: 'NVIDIA RTX 4060', icon: Component },
-      { name: 'RAM', value: '16GB DDR5', icon: MemoryStick },
-      { name: 'Storage', value: '1TB SSD', icon: HardDrive },
-      { name: 'Display', value: '16" FHD+ 144Hz', icon: Laptop },
+      { name: 'CPU', value: 'Intel Core i9 14th Gen', icon: 'Cpu' },
+      { name: 'GPU', value: 'NVIDIA RTX 4060', icon: 'Component' },
+      { name: 'RAM', value: '16GB DDR5', icon: 'MemoryStick' },
+      { name: 'Storage', value: '1TB SSD', icon: 'HardDrive' },
+      { name: 'Display', value: '16" FHD+ 144Hz', icon: 'Laptop' },
     ],
   },
   {
@@ -70,11 +59,11 @@ export const laptopData: Product[] = [
     imageUrl: 'https://placehold.co/600x400.png',
     dataAiHint: 'omen laptop',
     specs: [
-      { name: 'CPU', value: 'AMD Ryzen 7', icon: Cpu },
-      { name: 'GPU', value: 'NVIDIA RTX 4060', icon: Component },
-      { name: 'RAM', value: '16GB DDR5', icon: MemoryStick },
-      { name: 'Storage', value: '1TB SSD', icon: HardDrive },
-      { name: 'Display', value: '16.1" FHD 165Hz', icon: Laptop },
+      { name: 'CPU', value: 'AMD Ryzen 7', icon: 'Cpu' },
+      { name: 'GPU', value: 'NVIDIA RTX 4060', icon: 'Component' },
+      { name: 'RAM', value: '16GB DDR5', icon: 'MemoryStick' },
+      { name: 'Storage', value: '1TB SSD', icon: 'HardDrive' },
+      { name: 'Display', value: '16.1" FHD 165Hz', icon: 'Laptop' },
     ],
   },
   {
@@ -86,11 +75,11 @@ export const laptopData: Product[] = [
     imageUrl: 'https://placehold.co/600x400.png',
     dataAiHint: 'lenovo laptop',
     specs: [
-      { name: 'CPU', value: 'AMD Ryzen 7', icon: Cpu },
-      { name: 'GPU', value: 'NVIDIA RTX 4050', icon: Component },
-      { name: 'RAM', value: '16GB DDR5', icon: MemoryStick },
-      { name: 'Storage', value: '512GB SSD', icon: HardDrive },
-      { name: 'Display', value: '15.6" FHD', icon: Laptop },
+      { name: 'CPU', value: 'AMD Ryzen 7', icon: 'Cpu' },
+      { name: 'GPU', value: 'NVIDIA RTX 4050', icon: 'Component' },
+      { name: 'RAM', value: '16GB DDR5', icon: 'MemoryStick' },
+      { name: 'Storage', value: '512GB SSD', icon: 'HardDrive' },
+      { name: 'Display', value: '15.6" FHD', icon: 'Laptop' },
     ],
   },
   {
@@ -102,11 +91,11 @@ export const laptopData: Product[] = [
     imageUrl: 'https://placehold.co/600x400.png',
     dataAiHint: 'alienware laptop',
     specs: [
-      { name: 'CPU', value: 'Intel Core i7', icon: Cpu },
-      { name: 'GPU', value: 'NVIDIA RTX 4060', icon: Component },
-      { name: 'RAM', value: '16GB DDR5', icon: MemoryStick },
-      { name: 'Storage', value: '1TB SSD', icon: HardDrive },
-      { name: 'Display', value: '16" QHD+ 240Hz', icon: Laptop },
+      { name: 'CPU', value: 'Intel Core i7', icon: 'Cpu' },
+      { name: 'GPU', value: 'NVIDIA RTX 4060', icon: 'Component' },
+      { name: 'RAM', value: '16GB DDR5', icon: 'MemoryStick' },
+      { name: 'Storage', value: '1TB SSD', icon: 'HardDrive' },
+      { name: 'Display', value: '16" QHD+ 240Hz', icon: 'Laptop' },
     ],
   },
 ];
@@ -121,8 +110,8 @@ export const peripheralData: Product[] = [
     imageUrl: 'https://placehold.co/600x400.png',
     dataAiHint: 'portable monitor',
     specs: [
-      { name: 'Type', value: 'Portable Monitor', icon: Monitor },
-      { name: 'Size', value: '14 inch Touch', icon: Monitor },
+      { name: 'Type', value: 'Portable Monitor', icon: 'Monitor' },
+      { name: 'Size', value: '14 inch Touch', icon: 'Monitor' },
     ],
     emi: {
       12: 2664.58,
@@ -138,7 +127,7 @@ export const peripheralData: Product[] = [
     url: 'https://amzn.in/d/8uCb0lI',
     imageUrl: 'https://placehold.co/600x400.png',
     dataAiHint: 'gaming mouse',
-    specs: [{ name: 'Type', value: 'Wireless Mouse', icon: Mouse }],
+    specs: [{ name: 'Type', value: 'Wireless Mouse', icon: 'Mouse' }],
     emi: {
       12: 1066.19,
       18: 731.78,
@@ -153,7 +142,7 @@ export const peripheralData: Product[] = [
     url: 'https://kreo-tech.com/collections/keys-to-victory/products/hive65-mechanical-gaming-keyboard-with-kreo-purple-switches',
     imageUrl: 'https://placehold.co/600x400.png',
     dataAiHint: 'mechanical keyboard',
-    specs: [{ name: 'Type', value: 'Mechanical Keyboard', icon: Keyboard }],
+    specs: [{ name: 'Type', value: 'Mechanical Keyboard', icon: 'Keyboard' }],
     emi: {
       12: 266.55,
       18: 182.95,
@@ -168,7 +157,7 @@ export const peripheralData: Product[] = [
     url: 'https://kreo-tech.com/products/arctik-laptop-cooler',
     imageUrl: 'https://placehold.co/600x400.png',
     dataAiHint: 'laptop cooler',
-    specs: [{ name: 'Type', value: 'Cooling Pad', icon: Fan }],
+    specs: [{ name: 'Type', value: 'Cooling Pad', icon: 'Fan' }],
     emi: {
       12: 266.55,
       18: 182.95,

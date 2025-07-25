@@ -3,6 +3,7 @@
 
 import Image from 'next/image';
 import { CheckCircle2 } from 'lucide-react';
+import * as icons from 'lucide-react';
 
 import type { Product } from '@/lib/types';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -65,14 +66,17 @@ export function ProductCard({ product, isSelected, onSelect, isClickable = true 
       <CardContent className="flex-grow p-4 pt-0">
         <Separator className="mb-4" />
         <ul className="space-y-2 text-sm text-muted-foreground">
-          {product.specs.map((spec) => (
-            <li key={spec.name} className="flex items-center gap-3">
-              <spec.icon className="h-5 w-5 text-accent" />
-              <span>
-                <span className="font-semibold text-foreground">{spec.name}:</span> {spec.value}
-              </span>
-            </li>
-          ))}
+          {product.specs.map((spec) => {
+            const Icon = icons[spec.icon as keyof typeof icons] as icons.LucideIcon;
+            return (
+              <li key={spec.name} className="flex items-center gap-3">
+                {Icon && <Icon className="h-5 w-5 text-accent" />}
+                <span>
+                  <span className="font-semibold text-foreground">{spec.name}:</span> {spec.value}
+                </span>
+              </li>
+            )
+          })}
         </ul>
       </CardContent>
     </Card>

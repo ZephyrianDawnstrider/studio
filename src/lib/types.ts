@@ -3,7 +3,7 @@ import type { LucideIcon } from 'lucide-react';
 export interface Spec {
   name: string;
   value: string;
-  icon: LucideIcon;
+  icon: string;
 }
 
 export interface Emi {

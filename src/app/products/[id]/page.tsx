@@ -5,6 +5,7 @@ import { useState, useMemo, useCallback } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
+import * as icons from 'lucide-react';
 import { laptopData, peripheralData } from '@/lib/data';
 import type { Product } from '@/lib/types';
 import { ProductCard } from '@/components/product-card';
@@ -102,14 +103,17 @@ export default function ProductPage({ params }: { params: { id: string } }) {
                       </p>
                       <Separator />
                       <ul className="space-y-3 text-sm text-muted-foreground mt-4">
-                        {featuredLaptop.specs.map((spec) => (
-                          <li key={spec.name} className="flex items-center gap-3">
-                            <spec.icon className="h-5 w-5 text-accent" />
-                            <span>
-                              <span className="font-semibold text-foreground">{spec.name}:</span> {spec.value}
-                            </span>
-                          </li>
-                        ))}
+                        {featuredLaptop.specs.map((spec) => {
+                          const Icon = icons[spec.icon as keyof typeof icons] as icons.LucideIcon;
+                          return (
+                            <li key={spec.name} className="flex items-center gap-3">
+                              {Icon && <Icon className="h-5 w-5 text-accent" />}
+                              <span>
+                                <span className="font-semibold text-foreground">{spec.name}:</span> {spec.value}
+                              </span>
+                            </li>
+                          );
+                        })}
                       </ul>
                     </div>
                   </div>
