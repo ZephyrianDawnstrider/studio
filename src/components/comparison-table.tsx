@@ -1,3 +1,4 @@
+
 "use client";
 
 import type { Product } from '@/lib/types';
@@ -16,6 +17,9 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import { Button } from '@/components/ui/button';
+import Link from 'next/link';
+import { ExternalLink } from 'lucide-react';
 
 interface ComparisonTableProps {
   laptops: Product[];
@@ -74,6 +78,18 @@ export function ComparisonTable({ laptops }: ComparisonTableProps) {
                   ))}
                 </TableRow>
               ))}
+               <TableRow>
+                <TableCell></TableCell>
+                {laptops.map((laptop) => (
+                    <TableCell key={laptop.id}>
+                        <Button asChild className="w-full">
+                            <Link href={laptop.url} target="_blank" rel="noopener noreferrer">
+                                Shop Now <ExternalLink className="ml-2 h-4 w-4" />
+                            </Link>
+                        </Button>
+                    </TableCell>
+                ))}
+               </TableRow>
             </TableBody>
           </Table>
         </div>
