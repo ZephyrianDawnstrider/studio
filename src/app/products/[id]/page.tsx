@@ -57,17 +57,22 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
   const { totalCost, totalEmi } = useMemo(() => {
     const allSelected = [featuredLaptop, ...selectedPeripherals];
     const cost = allSelected.reduce((acc, item) => acc + item.price, 0);
-    const emi = selectedPeripherals.reduce(
-      (acc, item) => {
-        if (item.emi) {
-          acc[12] += item.emi[12];
-          acc[18] += item.emi[18];
-          acc[24] += item.emi[24];
-        }
-        return acc;
-      },
-      { 12: 0, 18: 0, 24: 0 }
-    );
+
+    // No-cost EMI is often calculated with a processing fee, here we assume a flat 15% interest rate for calculation
+    const calculateEmi = (principal: number, months: number) => {
+        const annualRate = 0.15;
+        const monthlyRate = annualRate / 12;
+        if (monthlyRate === 0) return principal / months;
+        const emi = (principal * monthlyRate * Math.pow(1 + monthlyRate, months)) / (Math.pow(1 + monthlyRate, months) - 1);
+        return emi;
+    }
+
+    const emi = {
+        12: calculateEmi(cost, 12),
+        18: calculateEmi(cost, 18),
+        24: calculateEmi(cost, 24),
+    }
+    
     return { totalCost: cost, totalEmi: emi };
   }, [featuredLaptop, selectedPeripherals]);
 
@@ -205,19 +210,19 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                       <span className="font-mono text-2xl text-primary">{formatCurrency(totalCost)}</span>
                     </div>
                   </div>
-                   {totalEmi[12] > 0 && (
+                   {totalCost > featuredLaptop.price && (
                      <Card className="bg-secondary/30 dark:bg-card mt-4">
                         <CardHeader className="p-4">
                           <CardTitle className="text-base flex items-center gap-2">
                             <CreditCard className="text-accent" />
-                            EMI for Peripherals
+                            EMI for Your Setup
                           </CardTitle>
                         </CardHeader>
                         <CardContent className="p-4 pt-0 text-sm">
                           <div className="flex justify-between"><span>12 Months:</span> <span className="font-mono">{formatCurrency(totalEmi[12])}/mo</span></div>
                           <div className="flex justify-between"><span>18 Months:</span> <span className="font-mono">{formatCurrency(totalEmi[18])}/mo</span></div>
                           <div className="flex justify-between"><span>24 Months:</span> <span className="font-mono">{formatCurrency(totalEmi[24])}/mo</span></div>
-                        </CardContent>
+                        </Content>
                       </Card>
                   )}
 
@@ -237,5 +242,3 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
     </div>
   );
 }
-
-    
