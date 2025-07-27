@@ -29,7 +29,11 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
 
   useEffect(() => {
     if (featuredLaptop) {
-      suggestLaptops({ price: featuredLaptop.price })
+      const cpu = featuredLaptop.specs.find(s => s.name === 'CPU')?.value || '';
+      const gpu = featuredLaptop.specs.find(s => s.name === 'GPU')?.value || '';
+      const ram = featuredLaptop.specs.find(s => s.name === 'RAM')?.value || '';
+
+      suggestLaptops({ cpu, gpu, ram })
         .then(response => {
           const filteredSuggestions = response.suggestions.filter(
             (suggestion: Product) => suggestion.id !== featuredLaptop.id
@@ -172,7 +176,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                   <CardDescription>Your custom configuration.</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  {selectedPeripherals.length > 0 ? (
+                  {allSelectedItems.length > 1 ? (
                     <>
                       <ScrollArea className="h-48 pr-4">
                         <ul className="space-y-3">
@@ -231,11 +235,9 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
             </div>
           </div>
           
-          {selectedPeripherals.length > 0 && (
-            <div className="mt-12">
+          <div className="mt-12">
               <ComparisonTable laptops={comparisonLaptops} />
-            </div>
-          )}
+          </div>
         </main>
       </div>
     </div>

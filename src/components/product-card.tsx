@@ -2,12 +2,14 @@
 "use client";
 
 import Image from 'next/image';
-import { CheckCircle2 } from 'lucide-react';
+import Link from 'next/link';
+import { CheckCircle2, ExternalLink } from 'lucide-react';
 import * as icons from 'lucide-react';
 
 import type { Product } from '@/lib/types';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
+import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
 interface ProductCardProps {
@@ -26,8 +28,13 @@ export function ProductCard({ product, isSelected, onSelect, isClickable = true 
     }).format(amount);
   };
 
-  const handleCardClick = () => {
+  const handleCardClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (isClickable) {
+      // prevent click event from bubbling up to parent Link component
+      if ((e.target as HTMLElement).closest('a')) {
+          e.stopPropagation();
+          return;
+      }
       onSelect(product, !isSelected);
     }
   };
@@ -79,6 +86,13 @@ export function ProductCard({ product, isSelected, onSelect, isClickable = true 
           })}
         </ul>
       </CardContent>
+      <CardFooter className="p-4 pt-0 mt-auto">
+        <Button asChild className="w-full">
+          <Link href={product.url} target="_blank" rel="noopener noreferrer">
+            Shop Now <ExternalLink className="ml-2 h-4 w-4" />
+          </Link>
+        </Button>
+      </CardFooter>
     </Card>
   );
 }

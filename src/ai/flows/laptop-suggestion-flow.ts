@@ -3,9 +3,9 @@
 'use server';
 
 /**
- * @fileOverview Suggests laptops within a similar price range.
+ * @fileOverview Suggests laptops with similar specifications.
  *
- * - suggestLaptops - A function that suggests laptops based on a given price.
+ * - suggestLaptops - A function that suggests laptops based on a given set of specs.
  * - SuggestLaptopsInput - The input type for the suggestLaptops function.
  * - SuggestLaptopsOutput - The return type for the suggestLaptops function.
  */
@@ -17,9 +17,9 @@ import type { Product } from '@/lib/types';
 
 
 const SuggestLaptopsInputSchema = z.object({
-  price: z
-    .number()
-    .describe('The price of the laptop to base suggestions on.'),
+    cpu: z.string().describe('The CPU of the laptop to base suggestions on.'),
+    gpu: z.string().describe('The GPU of the laptop to base suggestions on.'),
+    ram: z.string().describe('The RAM of the laptop to base suggestions on.'),
 });
 export type SuggestLaptopsInput = z.infer<
   typeof SuggestLaptopsInputSchema
@@ -52,19 +52,44 @@ export async function suggestLaptops(
   return suggestLaptopsFlow(input);
 }
 
+const prompt = ai.definePrompt({
+    name: 'laptopSuggestionPrompt',
+    input: { schema: SuggestLaptopsInputSchema },
+    output: { schema: SuggestLaptopsOutputSchema },
+    prompt: `You are a laptop recommendation expert. Based on the following specifications, suggest 3 other laptops from the provided list that have similar or better specs.
+
+CPU: {{cpu}}
+GPU: {{gpu}}
+RAM: {{ram}}
+
+Available Laptops:
+${JSON.stringify(laptopData, null, 2)}
+
+Return only the JSON for the suggested laptops.`,
+});
+
 const suggestLaptopsFlow = ai.defineFlow(
   {
     name: 'suggestLaptopsFlow',
     inputSchema: SuggestLaptopsInputSchema,
     outputSchema: SuggestLaptopsOutputSchema,
   },
-  async ({price}) => {
-    const priceRange = 10000;
-    const lowerBound = price - priceRange;
-    const upperBound = price + priceRange;
+  async (input) => {
+    // For this implementation, we will filter locally based on specs.
+    // A more advanced implementation could use an LLM with a prompt.
+    const suggestions = laptopData.filter(laptop => {
+        const cpuSpec = laptop.specs.find(spec => spec.name === 'CPU');
+        const gpuSpec = laptop.specs.find(spec => spec.name === 'GPU');
+        const ramSpec = laptop.specs.find(spec => spec.name === 'RAM');
 
-    const suggestions = laptopData.filter(laptop => laptop.price >= lowerBound && laptop.price <= upperBound);
-    
-    return { suggestions };
+        // Simple matching logic, can be improved
+        const cpuMatch = cpuSpec && cpuSpec.value.includes(input.cpu.split(' ')[0]);
+        const gpuMatch = gpuSpec && gpuSpec.value === input.gpu;
+        const ramMatch = ramSpec && parseInt(ramSpec.value) >= parseInt(input.ram);
+
+        return gpuMatch || cpuMatch || ramMatch;
+    });
+
+    return { suggestions: suggestions.slice(0, 3) };
   }
 );
