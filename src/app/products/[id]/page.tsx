@@ -92,7 +92,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
   const comparisonLaptops = [featuredLaptop, ...suggestedLaptops.slice(0, 2)];
 
   return (
-    <div 
+    <div
       className="min-h-screen bg-background text-foreground product-page-background"
       style={{'--bg-image': `url(${featuredLaptop.imageUrl})`} as React.CSSProperties}
     >
