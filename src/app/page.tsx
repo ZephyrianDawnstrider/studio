@@ -89,14 +89,12 @@ export default function Home() {
                   </Button>
                 </Link>
               </div>
-              <Link href={`/products/${featuredLaptop.id}`}>
-                <ProductCard
-                  product={featuredLaptop}
-                  isSelected={true}
-                  onSelect={() => {}}
-                  isClickable={false}
-                />
-              </Link>
+              <ProductCard
+                product={featuredLaptop}
+                isSelected={true}
+                onSelect={() => {}}
+                isClickable={false}
+              />
             </section>
             <section>
               <h2 className="text-3xl font-headline font-bold mb-6">Choose Your Peripherals</h2>
@@ -151,7 +149,7 @@ export default function Home() {
                   </div>
                 </div>
 
-                {totalCost > featuredLaptop.price && (
+                {totalCost > 0 && (
                    <Card className="bg-secondary/30 dark:bg-card mt-4">
                       <CardHeader className="p-4">
                         <CardTitle className="text-base flex items-center gap-2">
@@ -167,7 +165,7 @@ export default function Home() {
                     </Card>
                 )}
 
-                {totalCost > featuredLaptop.price && <FinancingRecommendation totalCost={totalCost} />}
+                {totalCost > 0 && <FinancingRecommendation totalCost={totalCost} />}
               </CardContent>
             </Card>
           </div>

@@ -24,14 +24,13 @@ export default function ProductsPage() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {laptopData.map((laptop) => (
-             <Link href={`/products/${laptop.id}`} key={laptop.id}>
               <ProductCard
+                key={laptop.id}
                 product={laptop}
                 isSelected={false}
                 onSelect={() => {}}
                 isClickable={false}
               />
-            </Link>
           ))}
         </div>
       </main>
