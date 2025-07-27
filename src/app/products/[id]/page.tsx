@@ -58,7 +58,6 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
     const allSelected = [featuredLaptop, ...selectedPeripherals];
     const cost = allSelected.reduce((acc, item) => acc + item.price, 0);
 
-    // No-cost EMI is often calculated with a processing fee, here we assume a flat 15% interest rate for calculation
     const calculateEmi = (principal: number, months: number) => {
         const annualRate = 0.15;
         const monthlyRate = annualRate / 12;
@@ -215,18 +214,18 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                         <CardHeader className="p-4">
                           <CardTitle className="text-base flex items-center gap-2">
                             <CreditCard className="text-accent" />
-                            EMI for Your Setup
+                            EMI for Total Setup
                           </CardTitle>
                         </CardHeader>
                         <CardContent className="p-4 pt-0 text-sm">
                           <div className="flex justify-between"><span>12 Months:</span> <span className="font-mono">{formatCurrency(totalEmi[12])}/mo</span></div>
                           <div className="flex justify-between"><span>18 Months:</span> <span className="font-mono">{formatCurrency(totalEmi[18])}/mo</span></div>
                           <div className="flex justify-between"><span>24 Months:</span> <span className="font-mono">{formatCurrency(totalEmi[24])}/mo</span></div>
-                        </Content>
+                        </CardContent>
                       </Card>
                   )}
 
-                  {selectedPeripherals.length > 0 && <FinancingRecommendation totalCost={totalCost} />}
+                  {totalCost > featuredLaptop.price && <FinancingRecommendation totalCost={totalCost} />}
                 </CardContent>
               </Card>
             </div>

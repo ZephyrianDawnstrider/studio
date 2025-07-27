@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import { useState, useMemo, useCallback } from 'react';
@@ -32,7 +33,6 @@ export default function Home() {
     const allSelected = [featuredLaptop, ...selectedPeripherals];
     const cost = allSelected.reduce((acc, item) => acc + item.price, 0);
 
-    // No-cost EMI is often calculated with a processing fee, here we assume a flat 15% interest rate for calculation
     const calculateEmi = (principal: number, months: number) => {
         const annualRate = 0.15;
         const monthlyRate = annualRate / 12;
@@ -156,7 +156,7 @@ export default function Home() {
                       <CardHeader className="p-4">
                         <CardTitle className="text-base flex items-center gap-2">
                           <CreditCard className="text-accent" />
-                          EMI for Your Setup
+                          EMI for Total Setup
                         </CardTitle>
                       </CardHeader>
                       <CardContent className="p-4 pt-0 text-sm">
@@ -167,7 +167,7 @@ export default function Home() {
                     </Card>
                 )}
 
-                {selectedPeripherals.length > 0 && <FinancingRecommendation totalCost={totalCost} />}
+                {totalCost > featuredLaptop.price && <FinancingRecommendation totalCost={totalCost} />}
               </CardContent>
             </Card>
           </div>
