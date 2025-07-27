@@ -32,8 +32,9 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
       const cpu = featuredLaptop.specs.find(s => s.name === 'CPU')?.value || '';
       const gpu = featuredLaptop.specs.find(s => s.name === 'GPU')?.value || '';
       const ram = featuredLaptop.specs.find(s => s.name === 'RAM')?.value || '';
+      const price = featuredLaptop.price;
 
-      suggestLaptops({ cpu, gpu, ram })
+      suggestLaptops({ cpu, gpu, ram, price })
         .then(response => {
           const filteredSuggestions = response.suggestions.filter(
             (suggestion: Product) => suggestion.id !== featuredLaptop.id

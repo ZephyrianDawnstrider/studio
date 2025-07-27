@@ -20,6 +20,7 @@ const SuggestLaptopsInputSchema = z.object({
     cpu: z.string().describe('The CPU of the laptop to base suggestions on.'),
     gpu: z.string().describe('The GPU of the laptop to base suggestions on.'),
     ram: z.string().describe('The RAM of the laptop to base suggestions on.'),
+    price: z.number().describe('The price of the laptop in INR to base suggestions on.'),
 });
 export type SuggestLaptopsInput = z.infer<
   typeof SuggestLaptopsInputSchema
@@ -60,8 +61,10 @@ const prompt = ai.definePrompt({
 - CPU: {{cpu}}
 - GPU: {{gpu}}
 - RAM: {{ram}}
+- Price: {{price}} INR
 
 Your task is to search the internet and find 3 different, more recent, or better value laptops with comparable or superior specifications.
+The suggested laptops MUST be within a price range of +/- 10,000 INR of the original laptop's price.
 
 For each suggestion, you must provide:
 1. A unique ID (e.g., 'acer-predator-helios-16').
