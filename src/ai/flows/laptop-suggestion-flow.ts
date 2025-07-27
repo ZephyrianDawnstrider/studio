@@ -3,7 +3,7 @@
 'use server';
 
 /**
- * @fileOverview Suggests laptops with similar specifications.
+ * @fileOverview Suggests laptops with similar specifications by searching the internet.
  *
  * - suggestLaptops - A function that suggests laptops based on a given set of specs.
  * - SuggestLaptopsInput - The input type for the suggestLaptops function.
@@ -12,7 +12,6 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
-import { laptopData } from '@/lib/data';
 import type { Product } from '@/lib/types';
 
 
@@ -27,17 +26,17 @@ export type SuggestLaptopsInput = z.infer<
 
 const SuggestLaptopsOutputSchema = z.object({
     suggestions: z.array(z.object({
-        id: z.string(),
+        id: z.string().describe('A unique identifier for the product, in a URL-friendly format (e.g., "msi-creator-z16").'),
         category: z.enum(['laptop', 'peripheral']),
-        name: z.string(),
-        price: z.number(),
-        url: z.string(),
-        imageUrl: z.string(),
-        dataAiHint: z.string(),
+        name: z.string().describe('The full name of the laptop.'),
+        price: z.number().describe('The estimated price of the laptop in INR.'),
+        url: z.string().url().describe('A direct link to the product purchase page.'),
+        imageUrl: z.string().url().describe('A direct link to a high-quality image of the product.'),
+        dataAiHint: z.string().describe('One or two keywords for the product image (e.g., "gaming laptop").'),
         specs: z.array(z.object({
-            name: z.string(),
-            value: z.string(),
-            icon: z.string(),
+            name: z.string().describe("The name of the specification (e.g., 'CPU', 'GPU')."),
+            value: z.string().describe("The value of the specification (e.g., 'Intel Core i9', 'NVIDIA RTX 4070')."),
+            icon: z.string().describe("The corresponding Lucide icon name (e.g., 'Cpu', 'Component')."),
         })),
     })).describe('A list of suggested laptops.'),
 });
@@ -56,16 +55,23 @@ const prompt = ai.definePrompt({
     name: 'laptopSuggestionPrompt',
     input: { schema: SuggestLaptopsInputSchema },
     output: { schema: SuggestLaptopsOutputSchema },
-    prompt: `You are a laptop recommendation expert. Based on the following specifications, suggest 3 other laptops from the provided list that have similar or better specs.
+    prompt: `You are a world-class expert at recommending high-performance laptops. A user is looking at a laptop with the following specifications:
+- CPU: {{cpu}}
+- GPU: {{gpu}}
+- RAM: {{ram}}
 
-CPU: {{cpu}}
-GPU: {{gpu}}
-RAM: {{ram}}
+Your task is to search the internet and find 3 different, more recent, or better value laptops with comparable or superior specifications.
 
-Available Laptops:
-${JSON.stringify(laptopData, null, 2)}
+For each suggestion, you must provide:
+1. A unique ID (e.g., 'acer-predator-helios-16').
+2. The full product name.
+3. The current price in Indian Rupees (INR).
+4. A direct URL to a reputable e-commerce site where it can be purchased.
+5. A direct URL to a high-quality, official product image.
+6. A one or two-word AI hint for the image.
+7. A list of key specifications (CPU, GPU, RAM, Storage, Display) with appropriate Lucide icon names.
 
-Return only the JSON for the suggested laptops.`,
+Return ONLY the JSON object containing the list of suggestions, formatted exactly according to the output schema. Do not include any other text or explanation.`,
 });
 
 const suggestLaptopsFlow = ai.defineFlow(
@@ -75,21 +81,7 @@ const suggestLaptopsFlow = ai.defineFlow(
     outputSchema: SuggestLaptopsOutputSchema,
   },
   async (input) => {
-    // For this implementation, we will filter locally based on specs.
-    // A more advanced implementation could use an LLM with a prompt.
-    const suggestions = laptopData.filter(laptop => {
-        const cpuSpec = laptop.specs.find(spec => spec.name === 'CPU');
-        const gpuSpec = laptop.specs.find(spec => spec.name === 'GPU');
-        const ramSpec = laptop.specs.find(spec => spec.name === 'RAM');
-
-        // Simple matching logic, can be improved
-        const cpuMatch = cpuSpec && cpuSpec.value.includes(input.cpu.split(' ')[0]);
-        const gpuMatch = gpuSpec && gpuSpec.value === input.gpu;
-        const ramMatch = ramSpec && parseInt(ramSpec.value) >= parseInt(input.ram);
-
-        return gpuMatch || cpuMatch || ramMatch;
-    });
-
-    return { suggestions: suggestions.slice(0, 3) };
+    const { output } = await prompt(input);
+    return output || { suggestions: [] };
   }
 );
