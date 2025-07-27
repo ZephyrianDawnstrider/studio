@@ -1,8 +1,7 @@
 
-
 "use client";
 
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback, useEffect } from 'react';
 import Link from 'next/link';
 import { laptopData, peripheralData } from '@/lib/data';
 import type { Product } from '@/lib/types';
@@ -14,10 +13,40 @@ import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
 import { Trash2, CreditCard, ArrowRight } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { suggestLaptops } from '@/ai/flows/laptop-suggestion-flow';
 
 export default function Home() {
   const [selectedLaptops, setSelectedLaptops] = useState<Product[]>([laptopData[0]]);
   const [selectedPeripherals, setSelectedPeripherals] = useState<Product[]>([]);
+  const [suggestedLaptops, setSuggestedLaptops] = useState<Product[]>([]);
+  const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(true);
+
+  const featuredLaptop = selectedLaptops[0];
+
+  useEffect(() => {
+    if (featuredLaptop) {
+      setIsLoadingSuggestions(true);
+      const cpu = featuredLaptop.specs.find(s => s.name === 'CPU')?.value || '';
+      const gpu = featuredLaptop.specs.find(s => s.name === 'GPU')?.value || '';
+      const ram = featuredLaptop.specs.find(s => s.name === 'RAM')?.value || '';
+      const price = featuredLaptop.price;
+
+      suggestLaptops({ cpu, gpu, ram, price })
+        .then(response => {
+          const filteredSuggestions = response.suggestions.filter(
+            (suggestion: Product) => suggestion.id !== featuredLaptop.id
+          );
+          setSuggestedLaptops(filteredSuggestions);
+        })
+        .catch(error => {
+          console.error("Failed to fetch suggested laptops:", error);
+          setSuggestedLaptops([]);
+        })
+        .finally(() => {
+            setIsLoadingSuggestions(false);
+        });
+    }
+  }, [featuredLaptop]);
 
   const handleSelectPeripheral = useCallback((product: Product, selected: boolean) => {
     if (selected) {
@@ -26,8 +55,6 @@ export default function Home() {
       setSelectedPeripherals((prev) => prev.filter((p) => p.id !== product.id));
     }
   }, []);
-
-  const featuredLaptop = selectedLaptops[0];
 
   const { totalCost, totalEmi } = useMemo(() => {
     const allSelected = [featuredLaptop, ...selectedPeripherals];
@@ -64,7 +91,7 @@ export default function Home() {
 
   const allSelectedItems = [featuredLaptop, ...selectedPeripherals];
 
-  const otherLaptops = laptopData.filter(laptop => laptop.id !== featuredLaptop.id);
+  const comparisonLaptops = [featuredLaptop, ...suggestedLaptops.slice(0, 2)];
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -171,11 +198,11 @@ export default function Home() {
           </div>
         </div>
         
-        {selectedPeripherals.length > 0 && (
+        {
             <div className="mt-12">
-                <ComparisonTable laptops={[featuredLaptop, ...otherLaptops.slice(0,2)]} />
+                <ComparisonTable laptops={comparisonLaptops} isLoading={isLoadingSuggestions} />
             </div>
-        )}
+        }
       </main>
     </div>
   );

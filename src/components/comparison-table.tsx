@@ -19,19 +19,17 @@ import {
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import { ExternalLink } from 'lucide-react';
+import { ExternalLink, Loader } from 'lucide-react';
+import { Skeleton } from './ui/skeleton';
 
 interface ComparisonTableProps {
   laptops: Product[];
+  isLoading?: boolean;
 }
 
 const comparisonFeatures = ['Price', 'CPU', 'GPU', 'RAM', 'Storage', 'Display'];
 
-export function ComparisonTable({ laptops }: ComparisonTableProps) {
-  if (laptops.length < 2) {
-    return null;
-  }
-
+export function ComparisonTable({ laptops, isLoading = false }: ComparisonTableProps) {
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-IN', {
       style: 'currency',
@@ -47,38 +45,61 @@ export function ComparisonTable({ laptops }: ComparisonTableProps) {
     const spec = product.specs.find((s) => s.name === feature);
     return spec ? spec.value : 'N/A';
   };
-
-  return (
-    <Card className="mt-8">
-      <CardHeader>
-        <CardTitle className="font-headline">Laptop Comparison</CardTitle>
-        <CardDescription>
-          Side-by-side comparison of your selected laptops.
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <div className="overflow-x-auto">
-          <Table>
+  
+  const renderLoadingState = () => (
+    <div className="overflow-x-auto">
+        <Table>
             <TableHeader>
-              <TableRow>
-                <TableHead className="font-bold min-w-[120px]">Feature</TableHead>
-                {laptops.map((laptop) => (
-                  <TableHead key={laptop.id} className="font-bold min-w-[200px]">{laptop.name}</TableHead>
-                ))}
-              </TableRow>
+                <TableRow>
+                    <TableHead className="font-bold min-w-[120px]">Feature</TableHead>
+                    <TableHead className="font-bold min-w-[200px]"><Skeleton className="h-5 w-4/5" /></TableHead>
+                    <TableHead className="font-bold min-w-[200px]"><Skeleton className="h-5 w-4/5" /></TableHead>
+                    <TableHead className="font-bold min-w-[200px]"><Skeleton className="h-5 w-4/5" /></TableHead>
+                </TableRow>
             </TableHeader>
             <TableBody>
-              {comparisonFeatures.map((feature) => (
-                <TableRow key={feature}>
-                  <TableCell className="font-medium">{feature}</TableCell>
-                  {laptops.map((laptop) => (
-                    <TableCell key={laptop.id}>
-                      {getSpecValue(laptop, feature)}
-                    </TableCell>
-                  ))}
+                {comparisonFeatures.map((feature) => (
+                    <TableRow key={feature}>
+                        <TableCell className="font-medium">{feature}</TableCell>
+                        <TableCell><Skeleton className="h-5 w-3/5" /></TableCell>
+                        <TableCell><Skeleton className="h-5 w-3/5" /></TableCell>
+                        <TableCell><Skeleton className="h-5 w-3/5" /></TableCell>
+                    </TableRow>
+                ))}
+                <TableRow>
+                    <TableCell></TableCell>
+                    <TableCell><Skeleton className="h-10 w-full" /></TableCell>
+                    <TableCell><Skeleton className="h-10 w-full" /></TableCell>
+                    <TableCell><Skeleton className="h-10 w-full" /></TableCell>
                 </TableRow>
-              ))}
-               <TableRow>
+            </TableBody>
+        </Table>
+    </div>
+  );
+
+  const renderComparisonTable = () => (
+     <div className="overflow-x-auto">
+        <Table>
+            <TableHeader>
+            <TableRow>
+                <TableHead className="font-bold min-w-[120px]">Feature</TableHead>
+                {laptops.map((laptop) => (
+                <TableHead key={laptop.id} className="font-bold min-w-[200px]">{laptop.name}</TableHead>
+                ))}
+            </TableRow>
+            </TableHeader>
+            <TableBody>
+            {comparisonFeatures.map((feature) => (
+                <TableRow key={feature}>
+                <TableCell className="font-medium">{feature}</TableCell>
+                {laptops.map((laptop) => (
+                    <TableCell key={laptop.id}>
+                    {getSpecValue(laptop, feature)}
+                    </TableCell>
+                ))}
+                </TableRow>
+            ))}
+            <TableRow>
                 <TableCell></TableCell>
                 {laptops.map((laptop) => (
                     <TableCell key={laptop.id}>
@@ -89,10 +110,32 @@ export function ComparisonTable({ laptops }: ComparisonTableProps) {
                         </Button>
                     </TableCell>
                 ))}
-               </TableRow>
+            </TableRow>
             </TableBody>
-          </Table>
-        </div>
+        </Table>
+    </div>
+  )
+
+  const renderEmptyState = () => (
+    <div className="text-center py-10 text-muted-foreground">
+        <p>No comparable laptops found at the moment.</p>
+        <p className="text-sm">Try changing the featured laptop to get new suggestions.</p>
+    </div>
+  )
+
+  return (
+    <Card className="mt-8">
+      <CardHeader>
+        <CardTitle className="font-headline flex items-center gap-4">
+            AI Laptop Comparison
+            {isLoading && <Loader className="animate-spin text-primary" />}
+        </CardTitle>
+        <CardDescription>
+          Side-by-side comparison of your selected laptop and AI-powered suggestions from the web.
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+       {isLoading ? renderLoadingState() : (laptops.length > 1 ? renderComparisonTable() : renderEmptyState())}
       </CardContent>
     </Card>
   );
