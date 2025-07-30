@@ -10,18 +10,25 @@ import { Trash2 } from 'lucide-react';
 
 interface PeripheralsSelectionProps {
   peripherals: Product[];
+  onSelect?: (product: Product, selected: boolean) => void;
 }
 
-export function PeripheralsSelection({ peripherals }: PeripheralsSelectionProps) {
+export function PeripheralsSelection({ peripherals, onSelect }: PeripheralsSelectionProps) {
   const [selectedPeripherals, setSelectedPeripherals] = useState<Product[]>([]);
 
   const handleSelectPeripheral = useCallback((product: Product, selected: boolean) => {
     if (selected) {
       setSelectedPeripherals((prev) => [...prev, product]);
+      if (onSelect) {
+        onSelect(product, true);
+      }
     } else {
       setSelectedPeripherals((prev) => prev.filter((p) => p.id !== product.id));
+      if (onSelect) {
+        onSelect(product, false);
+      }
     }
-  }, []);
+  }, [onSelect]);
 
   const clearSelection = () => {
     setSelectedPeripherals([]);
