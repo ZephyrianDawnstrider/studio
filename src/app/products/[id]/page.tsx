@@ -18,17 +18,21 @@ import { Button } from '@/components/ui/button';
 import { ArrowLeft, Trash2, CreditCard } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { suggestLaptops } from '@/ai/flows/laptop-suggestion-flow';
+import { useToast } from '@/hooks/use-toast';
 import './product-page.css';
 
 export default function ProductPage({ params }: { params: Promise<{ id: string }> }) {
   const [selectedPeripherals, setSelectedPeripherals] = useState<Product[]>([]);
   const [suggestedLaptops, setSuggestedLaptops] = useState<Product[]>([]);
+  const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(true);
+  const { toast } = useToast();
   const { id } = use(params);
 
   const featuredLaptop = laptopData.find((p) => p.id === id);
 
   useEffect(() => {
     if (featuredLaptop) {
+      setIsLoadingSuggestions(true);
       const cpu = featuredLaptop.specs.find(s => s.name === 'CPU')?.value || '';
       const gpu = featuredLaptop.specs.find(s => s.name === 'GPU')?.value || '';
       const ram = featuredLaptop.specs.find(s => s.name === 'RAM')?.value || '';
@@ -43,9 +47,18 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
         })
         .catch(error => {
           console.error("Failed to fetch suggested laptops:", error);
+          setSuggestedLaptops([]);
+          toast({
+            variant: 'destructive',
+            title: 'AI Suggestions Unavailable',
+            description: 'Could not fetch laptop suggestions. The AI service may be temporarily overloaded. Please try again later.',
+          });
+        })
+        .finally(() => {
+          setIsLoadingSuggestions(false);
         });
     }
-  }, [featuredLaptop]);
+  }, [featuredLaptop, toast, id]);
 
   if (!featuredLaptop) {
     notFound();
@@ -237,7 +250,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
           </div>
           
           <div className="mt-12">
-              <ComparisonTable laptops={comparisonLaptops} />
+              <ComparisonTable laptops={comparisonLaptops} isLoading={isLoadingSuggestions} />
           </div>
         </main>
       </div>

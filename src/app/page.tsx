@@ -14,12 +14,14 @@ import { Button } from '@/components/ui/button';
 import { Trash2, CreditCard, ArrowRight } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { suggestLaptops } from '@/ai/flows/laptop-suggestion-flow';
+import { useToast } from '@/hooks/use-toast';
 
 export default function Home() {
   const [selectedLaptops, setSelectedLaptops] = useState<Product[]>([laptopData[0]]);
   const [selectedPeripherals, setSelectedPeripherals] = useState<Product[]>([]);
   const [suggestedLaptops, setSuggestedLaptops] = useState<Product[]>([]);
   const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(true);
+  const { toast } = useToast();
 
   const featuredLaptop = selectedLaptops[0];
 
@@ -41,12 +43,17 @@ export default function Home() {
         .catch(error => {
           console.error("Failed to fetch suggested laptops:", error);
           setSuggestedLaptops([]);
+          toast({
+            variant: 'destructive',
+            title: 'AI Suggestions Unavailable',
+            description: 'Could not fetch laptop suggestions. The AI service may be temporarily overloaded. Please try again later.',
+          });
         })
         .finally(() => {
             setIsLoadingSuggestions(false);
         });
     }
-  }, [featuredLaptop]);
+  }, [featuredLaptop, toast]);
 
   const handleSelectPeripheral = useCallback((product: Product, selected: boolean) => {
     if (selected) {
