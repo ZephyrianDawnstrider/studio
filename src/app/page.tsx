@@ -92,17 +92,7 @@ export default async function Home() {
             </section>
             <section>
               <h2 className="text-3xl font-headline font-bold mb-6">Choose Your Peripherals</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {peripheralData.map((peripheral) => (
-                  <ProductCard
-                    key={peripheral.id}
-                    product={peripheral}
-                    isSelected={false}
-                    onSelect={() => {}}
-                    isClickable={false}
-                  />
-                ))}
-              </div>
+              <PeripheralsSelection peripherals={peripheralData} />
             </section>
           </div>
 
