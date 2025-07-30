@@ -1,7 +1,4 @@
 
-"use client";
-
-import { useState, useMemo, useCallback, useEffect } from 'react';
 import Link from 'next/link';
 import { laptopData, peripheralData } from '@/lib/data';
 import type { Product } from '@/lib/types';
@@ -14,75 +11,46 @@ import { Button } from '@/components/ui/button';
 import { Trash2, CreditCard, ArrowRight } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { suggestLaptops } from '@/ai/flows/laptop-suggestion-flow';
-import { useToast } from '@/hooks/use-toast';
 
-export default function Home() {
-  const [selectedLaptops, setSelectedLaptops] = useState<Product[]>([laptopData[0]]);
-  const [selectedPeripherals, setSelectedPeripherals] = useState<Product[]>([]);
-  const [suggestedLaptops, setSuggestedLaptops] = useState<Product[]>([]);
-  const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(true);
-  const { toast } = useToast();
+async function getSuggestedLaptops(featuredLaptop: Product) {
+  const cpu = featuredLaptop.specs.find(s => s.name === 'CPU')?.value || '';
+  const gpu = featuredLaptop.specs.find(s => s.name === 'GPU')?.value || '';
+  const ram = featuredLaptop.specs.find(s => s.name === 'RAM')?.value || '';
+  const price = featuredLaptop.price;
 
+  try {
+    const response = await suggestLaptops({ cpu, gpu, ram, price });
+    return response.suggestions.filter((suggestion: Product) => suggestion.id !== featuredLaptop.id);
+  } catch (error) {
+    console.error("Failed to fetch suggested laptops:", error);
+    return [];
+  }
+}
+
+export default async function Home() {
+  const selectedLaptops: Product[] = [laptopData[0]];
+  const selectedPeripherals: Product[] = [];
   const featuredLaptop = selectedLaptops[0];
 
-  useEffect(() => {
-    if (featuredLaptop) {
-      setIsLoadingSuggestions(true);
-      const cpu = featuredLaptop.specs.find(s => s.name === 'CPU')?.value || '';
-      const gpu = featuredLaptop.specs.find(s => s.name === 'GPU')?.value || '';
-      const ram = featuredLaptop.specs.find(s => s.name === 'RAM')?.value || '';
-      const price = featuredLaptop.price;
+  const suggestedLaptops = await getSuggestedLaptops(featuredLaptop);
 
-      suggestLaptops({ cpu, gpu, ram, price })
-        .then(response => {
-          const filteredSuggestions = response.suggestions.filter(
-            (suggestion: Product) => suggestion.id !== featuredLaptop.id
-          );
-          setSuggestedLaptops(filteredSuggestions);
-        })
-        .catch(error => {
-          console.error("Failed to fetch suggested laptops:", error);
-          setSuggestedLaptops([]);
-          toast({
-            variant: 'destructive',
-            title: 'AI Suggestions Unavailable',
-            description: 'Could not fetch laptop suggestions. The AI service may be temporarily overloaded. Please try again later.',
-          });
-        })
-        .finally(() => {
-            setIsLoadingSuggestions(false);
-        });
-    }
-  }, [featuredLaptop, toast]);
+  const allSelectedItems = [featuredLaptop, ...selectedPeripherals];
 
-  const handleSelectPeripheral = useCallback((product: Product, selected: boolean) => {
-    if (selected) {
-      setSelectedPeripherals((prev) => [...prev, product]);
-    } else {
-      setSelectedPeripherals((prev) => prev.filter((p) => p.id !== product.id));
-    }
-  }, []);
+  const totalCost = allSelectedItems.reduce((acc, item) => acc + item.price, 0);
 
-  const { totalCost, totalEmi } = useMemo(() => {
-    const allSelected = [featuredLaptop, ...selectedPeripherals];
-    const cost = allSelected.reduce((acc, item) => acc + item.price, 0);
+  const calculateEmi = (principal: number, months: number) => {
+    const annualRate = 0.15;
+    const monthlyRate = annualRate / 12;
+    if (monthlyRate === 0) return principal / months;
+    const emi = (principal * monthlyRate * Math.pow(1 + monthlyRate, months)) / (Math.pow(1 + monthlyRate, months) - 1);
+    return emi;
+  };
 
-    const calculateEmi = (principal: number, months: number) => {
-        const annualRate = 0.15;
-        const monthlyRate = annualRate / 12;
-        if (monthlyRate === 0) return principal / months;
-        const emi = (principal * monthlyRate * Math.pow(1 + monthlyRate, months)) / (Math.pow(1 + monthlyRate, months) - 1);
-        return emi;
-    }
-
-    const emi = {
-        12: calculateEmi(cost, 12),
-        18: calculateEmi(cost, 18),
-        24: calculateEmi(cost, 24),
-    }
-
-    return { totalCost: cost, totalEmi: emi };
-  }, [featuredLaptop, selectedPeripherals]);
+  const totalEmi = {
+    12: calculateEmi(totalCost, 12),
+    18: calculateEmi(totalCost, 18),
+    24: calculateEmi(totalCost, 24),
+  };
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-IN', {
@@ -91,14 +59,6 @@ export default function Home() {
       minimumFractionDigits: 2,
     }).format(amount);
   };
-
-  const clearSelection = () => {
-    setSelectedPeripherals([]);
-  };
-
-  const allSelectedItems = [featuredLaptop, ...selectedPeripherals];
-
-  const comparisonLaptops = [featuredLaptop, ...suggestedLaptops.slice(0, 2)];
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -111,7 +71,7 @@ export default function Home() {
             Your ultimate tool to compare high-performance laptops and peripherals. Build your dream setup and get smart financing advice.
           </p>
         </header>
-        
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
           <div className="lg:col-span-2 space-y-12">
             <section>
@@ -137,9 +97,9 @@ export default function Home() {
                   <ProductCard
                     key={peripheral.id}
                     product={peripheral}
-                    isSelected={selectedPeripherals.some((p) => p.id === peripheral.id)}
-                    onSelect={handleSelectPeripheral}
-                    isClickable={true}
+                    isSelected={false}
+                    onSelect={() => {}}
+                    isClickable={false}
                   />
                 ))}
               </div>
@@ -153,27 +113,23 @@ export default function Home() {
                 <CardDescription>Review your selections and total cost.</CardDescription>
               </CardHeader>
               <CardContent>
-                {allSelectedItems.length > 1 ? (
+                {allSelectedItems.length > 0 ? (
                   <>
-                  <ScrollArea className="h-48 pr-4">
-                    <ul className="space-y-3">
-                      {allSelectedItems.map(item => (
-                        <li key={item.id} className="flex justify-between items-center text-sm">
-                          <span className="font-medium truncate pr-2">{item.name}</span>
-                          <span className="font-mono text-primary whitespace-nowrap">{formatCurrency(item.price)}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </ScrollArea>
-                   <Button variant="ghost" size="sm" className="mt-2 text-destructive hover:text-destructive" onClick={clearSelection}>
-                      <Trash2 className="mr-2 h-4 w-4" />
-                      Clear Peripherals
-                    </Button>
+                    <ScrollArea className="h-48 pr-4">
+                      <ul className="space-y-3">
+                        {allSelectedItems.map(item => (
+                          <li key={item.id} className="flex justify-between items-center text-sm">
+                            <span className="font-medium truncate pr-2">{item.name}</span>
+                            <span className="font-mono text-primary whitespace-nowrap">{formatCurrency(item.price)}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </ScrollArea>
                   </>
                 ) : (
                   <p className="text-sm text-muted-foreground text-center py-10">Select peripherals to build your setup.</p>
                 )}
-                
+
                 <Separator className="my-4" />
 
                 <div className="space-y-2">
@@ -184,19 +140,19 @@ export default function Home() {
                 </div>
 
                 {totalCost > 0 && (
-                   <Card className="bg-secondary/30 dark:bg-card mt-4">
-                      <CardHeader className="p-4">
-                        <CardTitle className="text-base flex items-center gap-2">
-                          <CreditCard className="text-accent" />
-                          EMI for Total Setup
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent className="p-4 pt-0 text-sm">
-                        <div className="flex justify-between"><span>12 Months:</span> <span className="font-mono">{formatCurrency(totalEmi[12])}/mo</span></div>
-                        <div className="flex justify-between"><span>18 Months:</span> <span className="font-mono">{formatCurrency(totalEmi[18])}/mo</span></div>
-                        <div className="flex justify-between"><span>24 Months:</span> <span className="font-mono">{formatCurrency(totalEmi[24])}/mo</span></div>
-                      </CardContent>
-                    </Card>
+                  <Card className="bg-secondary/30 dark:bg-card mt-4">
+                    <CardHeader className="p-4">
+                      <CardTitle className="text-base flex items-center gap-2">
+                        <CreditCard className="text-accent" />
+                        EMI for Total Setup
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="p-4 pt-0 text-sm">
+                      <div className="flex justify-between"><span>12 Months:</span> <span className="font-mono">{formatCurrency(totalEmi[12])}/mo</span></div>
+                      <div className="flex justify-between"><span>18 Months:</span> <span className="font-mono">{formatCurrency(totalEmi[18])}/mo</span></div>
+                      <div className="flex justify-between"><span>24 Months:</span> <span className="font-mono">{formatCurrency(totalEmi[24])}/mo</span></div>
+                    </CardContent>
+                  </Card>
                 )}
 
                 {totalCost > 0 && <FinancingRecommendation totalCost={totalCost} />}
@@ -204,12 +160,10 @@ export default function Home() {
             </Card>
           </div>
         </div>
-        
-        {
-            <div className="mt-12">
-                <ComparisonTable laptops={comparisonLaptops} isLoading={isLoadingSuggestions} />
-            </div>
-        }
+
+        <div className="mt-12">
+          <ComparisonTable laptops={suggestedLaptops.slice(0, 3)} isLoading={false} />
+        </div>
       </main>
     </div>
   );

@@ -1,8 +1,5 @@
 
 
-"use client";
-
-import { useState, useMemo, useCallback, use, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
@@ -15,83 +12,63 @@ import { FinancingRecommendation } from '@/components/financing-recommendation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Trash2, CreditCard } from 'lucide-react';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import { ArrowLeft, CreditCard } from 'lucide-react';
 import { suggestLaptops } from '@/ai/flows/laptop-suggestion-flow';
-import { useToast } from '@/hooks/use-toast';
+
+import { PeripheralsSelection } from '@/components/peripherals-selection';
+import { ScrollArea } from '@/components/ui/scroll-area';
+
 import './product-page.css';
 
-export default function ProductPage({ params }: { params: Promise<{ id: string }> }) {
-  const [selectedPeripherals, setSelectedPeripherals] = useState<Product[]>([]);
-  const [suggestedLaptops, setSuggestedLaptops] = useState<Product[]>([]);
-  const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(true);
-  const { toast } = useToast();
-  const { id } = use(params);
+async function getSuggestedLaptops(featuredLaptop: Product) {
+  const cpu = featuredLaptop.specs.find(s => s.name === 'CPU')?.value || '';
+  const gpu = featuredLaptop.specs.find(s => s.name === 'GPU')?.value || '';
+  const ram = featuredLaptop.specs.find(s => s.name === 'RAM')?.value || '';
+  const price = featuredLaptop.price;
 
+  try {
+    const response = await suggestLaptops({ cpu, gpu, ram, price });
+    return response.suggestions.filter((suggestion: Product) => suggestion.id !== featuredLaptop.id);
+  } catch (error) {
+    console.error("Failed to fetch suggested laptops:", error);
+    return [];
+  }
+}
+
+interface ProductPageProps {
+  params: { id: string };
+}
+
+export default async function ProductPage({ params }: ProductPageProps) {
+  const awaitedParams = await params;
+  const { id } = awaitedParams;
   const featuredLaptop = laptopData.find((p) => p.id === id);
-
-  useEffect(() => {
-    if (featuredLaptop) {
-      setIsLoadingSuggestions(true);
-      const cpu = featuredLaptop.specs.find(s => s.name === 'CPU')?.value || '';
-      const gpu = featuredLaptop.specs.find(s => s.name === 'GPU')?.value || '';
-      const ram = featuredLaptop.specs.find(s => s.name === 'RAM')?.value || '';
-      const price = featuredLaptop.price;
-
-      suggestLaptops({ cpu, gpu, ram, price })
-        .then(response => {
-          const filteredSuggestions = response.suggestions.filter(
-            (suggestion: Product) => suggestion.id !== featuredLaptop.id
-          );
-          setSuggestedLaptops(filteredSuggestions);
-        })
-        .catch(error => {
-          console.error("Failed to fetch suggested laptops:", error);
-          setSuggestedLaptops([]);
-          toast({
-            variant: 'destructive',
-            title: 'AI Suggestions Unavailable',
-            description: 'Could not fetch laptop suggestions. The AI service may be temporarily overloaded. Please try again later.',
-          });
-        })
-        .finally(() => {
-          setIsLoadingSuggestions(false);
-        });
-    }
-  }, [featuredLaptop, toast, id]);
 
   if (!featuredLaptop) {
     notFound();
   }
 
-  const handleSelectPeripheral = useCallback((product: Product, selected: boolean) => {
-    if (selected) {
-      setSelectedPeripherals((prev) => [...prev, product]);
-    } else {
-      setSelectedPeripherals((prev) => prev.filter((p) => p.id !== product.id));
-    }
-  }, []);
+  const suggestedLaptops = await getSuggestedLaptops(featuredLaptop);
 
-  const { totalCost, totalEmi } = useMemo(() => {
-    const allSelected = [featuredLaptop, ...selectedPeripherals];
-    const cost = allSelected.reduce((acc, item) => acc + item.price, 0);
+  const selectedPeripherals: Product[] = [];
 
-    const calculateEmi = (principal: number, months: number) => {
-        const annualRate = 0.15;
-        const monthlyRate = annualRate / 12;
-        if (monthlyRate === 0) return principal / months;
-        const emi = (principal * monthlyRate * Math.pow(1 + monthlyRate, months)) / (Math.pow(1 + monthlyRate, months) - 1);
-        return emi;
-    }
+  const allSelectedItems = [featuredLaptop, ...selectedPeripherals];
 
-    const emi = {
-        12: calculateEmi(cost, 12),
-        18: calculateEmi(cost, 18),
-        24: calculateEmi(cost, 24),
-    }
-    
-    return { totalCost: cost, totalEmi: emi };
-  }, [featuredLaptop, selectedPeripherals]);
+  const totalCost = allSelectedItems.reduce((acc, item) => acc + item.price, 0);
+
+  const calculateEmi = (principal: number, months: number) => {
+    const annualRate = 0.15;
+    const monthlyRate = annualRate / 12;
+    if (monthlyRate === 0) return principal / months;
+    const emi = (principal * monthlyRate * Math.pow(1 + monthlyRate, months)) / (Math.pow(1 + monthlyRate, months) - 1);
+    return emi;
+  };
+
+  const totalEmi = {
+    12: calculateEmi(totalCost, 12),
+    18: calculateEmi(totalCost, 18),
+    24: calculateEmi(totalCost, 24),
+  };
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-IN', {
@@ -101,18 +78,10 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
     }).format(amount);
   };
 
-  const clearSelection = () => {
-    setSelectedPeripherals([]);
-  };
-
-  const allSelectedItems = [featuredLaptop, ...selectedPeripherals];
-  
-  const comparisonLaptops = [featuredLaptop, ...suggestedLaptops.slice(0, 2)];
-
   return (
     <div
       className="min-h-screen bg-background text-foreground product-page-background"
-      style={{'--bg-image': `url(${featuredLaptop.imageUrl})`} as React.CSSProperties}
+      style={{ '--bg-image': `url(${featuredLaptop.imageUrl})` } as React.CSSProperties}
     >
       <div className="backdrop-blur-sm bg-background/80 min-h-screen">
         <main className="container mx-auto px-4 py-8">
@@ -127,7 +96,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
               {featuredLaptop.name}
             </h1>
           </header>
-          
+
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
             <div className="lg:col-span-2 space-y-12">
               <section>
@@ -169,17 +138,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
               </section>
               <section>
                 <h2 className="text-3xl font-headline font-bold mb-6 text-primary-foreground drop-shadow-md">Add Peripherals</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {peripheralData.map((peripheral) => (
-                    <ProductCard
-                      key={peripheral.id}
-                      product={peripheral}
-                      isSelected={selectedPeripherals.some((p) => p.id === peripheral.id)}
-                      onSelect={handleSelectPeripheral}
-                      isClickable={true}
-                    />
-                  ))}
-                </div>
+                <PeripheralsSelection peripherals={peripheralData} />
               </section>
             </div>
 
@@ -190,7 +149,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                   <CardDescription>Your custom configuration.</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  {allSelectedItems.length > 1 ? (
+                  {allSelectedItems.length > 0 ? (
                     <>
                       <ScrollArea className="h-48 pr-4">
                         <ul className="space-y-3">
@@ -202,23 +161,11 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                           ))}
                         </ul>
                       </ScrollArea>
-                      <Button variant="ghost" size="sm" className="mt-2 text-destructive hover:text-destructive" onClick={clearSelection}>
-                        <Trash2 className="mr-2 h-4 w-4" />
-                        Clear Peripherals
-                      </Button>
                     </>
                   ) : (
-                    <div className="text-center py-10">
-                      <p className="text-sm text-muted-foreground">Your chosen laptop is shown here.</p>
-                       <ul className="space-y-3 mt-4">
-                          <li className="flex justify-between items-center text-sm">
-                              <span className="font-medium truncate pr-2">{featuredLaptop.name}</span>
-                              <span className="font-mono text-primary whitespace-nowrap">{formatCurrency(featuredLaptop.price)}</span>
-                          </li>
-                        </ul>
-                    </div>
+                    <p className="text-sm text-muted-foreground text-center py-10">Your chosen laptop is shown here.</p>
                   )}
-                  
+
                   <Separator className="my-4" />
 
                   <div className="space-y-2">
@@ -250,7 +197,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
           </div>
           
           <div className="mt-12">
-              <ComparisonTable laptops={comparisonLaptops} isLoading={isLoadingSuggestions} />
+              <ComparisonTable laptops={suggestedLaptops.slice(0, 3)} isLoading={false} />
           </div>
         </main>
       </div>
