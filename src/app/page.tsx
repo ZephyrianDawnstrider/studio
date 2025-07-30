@@ -5,6 +5,7 @@ import type { Product } from '@/lib/types';
 import { ProductCard } from '@/components/product-card';
 import { ComparisonTable } from '@/components/comparison-table';
 import { FinancingRecommendation } from '@/components/financing-recommendation';
+import { PeripheralsSelection } from '@/components/peripherals-selection';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
