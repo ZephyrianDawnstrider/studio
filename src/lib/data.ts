@@ -9,6 +9,10 @@ export const laptopData: Product[] = [
     price: 265843.0,
     url: 'https://www.lenovo.com/in/en/configurator/cto/index.html?bundleId=83F5CTO1WWIN1',
     imageUrl: '/images/lenovo-legion-pro7.avif',
+<<<<<<< HEAD
+=======
+
+>>>>>>> f2ad0c9a5e755184ad20126f1cb59c0aca41be39
     dataAiHint: 'gaming laptop',
     specs: [
       { name: 'CPU', value: 'Intel Core Ultra', icon: 'Cpu' },
@@ -25,6 +29,10 @@ export const laptopData: Product[] = [
     price: 122990.0,
     url: 'https://www.croma.com/lenovo-legion-5-15irx9-intel-core-i7-13th-gen-gaming-laptop-24gb-512gb-ssd-windows-11-home-8gb-graphics-15-6-inch-144-hz-full-hd-ips-display-nvidia-geforce-rtx-4060-ms-office-home-2024-storm-grey-2-32-kg-/p/315212',
     imageUrl: '/images/z7dezyf11pla6jhrlp3unpqzfekged433714.avif',
+<<<<<<< HEAD
+=======
+
+>>>>>>> f2ad0c9a5e755184ad20126f1cb59c0aca41be39
     dataAiHint: 'gaming laptop',
     specs: [
       { name: 'CPU', value: 'Intel Core i7 13th Gen', icon: 'Cpu' },
@@ -41,6 +49,10 @@ export const laptopData: Product[] = [
     price: 139990.0,
     url: 'https://www.croma.com/msi-sword-16-hx-b14vfkg-287in-intel-core-i9-14th-gen-gaming-laptop-16gb-1tb-ssd-windows-11-home-8gb-graphics-16-inch-144-hz-fhd-plusips-level-display-nvidia-geforce-rtx-4060-ms-office-2021-cosmos-gray-2-3-kg-/p/306667',
     imageUrl: '/images/msi-sword17-gpu-nb.avif',
+<<<<<<< HEAD
+=======
+
+>>>>>>> f2ad0c9a5e755184ad20126f1cb59c0aca41be39
     dataAiHint: 'laptop computer',
     specs: [
       { name: 'CPU', value: 'Intel Core i9 14th Gen', icon: 'Cpu' },
@@ -57,6 +69,10 @@ export const laptopData: Product[] = [
     price: 104490.0,
     url: 'https://www.croma.com/hp-omen-16-xd0020ax-amd-ryzen-7-gaming-laptop-16gb-1tb-ssd-windows-11-home-8gb-graphics-16-1-inch-165-hz-fhd-display-nvidia-geforce-rtx-4060-ms-office-2021-shadow-black-2-37-kg-/p/307123',
     imageUrl: '/images/hp-omen-16-xd0015.avif',
+<<<<<<< HEAD
+=======
+
+>>>>>>> f2ad0c9a5e755184ad20126f1cb59c0aca41be39
     dataAiHint: 'omen laptop',
     specs: [
       { name: 'CPU', value: 'AMD Ryzen 7', icon: 'Cpu' },
@@ -73,6 +89,10 @@ export const laptopData: Product[] = [
     price: 94990.0,
     url: 'https://www.lenovo.com/in/en/p/laptops/loq-laptops/lenovo-loq-15arp9/83jc00ehin',
     imageUrl: '/images/lenovo-loq-15arp9.avif',
+<<<<<<< HEAD
+=======
+
+>>>>>>> f2ad0c9a5e755184ad20126f1cb59c0aca41be39
     dataAiHint: 'lenovo laptop',
     specs: [
       { name: 'CPU', value: 'AMD Ryzen 7', icon: 'Cpu' },
@@ -89,6 +109,10 @@ export const laptopData: Product[] = [
     price: 132789.98,
     url: 'https://www.dell.com/en-in/shop/gaming-and-games/alienware-16-aurora-gaming-laptop/spd/alienware-aurora-ac16250-gaming-laptop/oan1625000901mino',
     imageUrl: '/images/laptop-alienware-16-aurora-gaming-laptop.avif',
+<<<<<<< HEAD
+=======
+
+>>>>>>> f2ad0c9a5e755184ad20126f1cb59c0aca41be39
     dataAiHint: 'alienware laptop',
     specs: [
       { name: 'CPU', value: 'Intel Core i7', icon: 'Cpu' },
@@ -108,6 +132,10 @@ export const peripheralData: Product[] = [
     price: 29990.0,
     url: 'https://www.lenovo.com/in/en/p/accessories-and-software/monitors/office/63fduar6ww',
     imageUrl: '/images/thinkvision-m14t.avif',
+<<<<<<< HEAD
+=======
+
+>>>>>>> f2ad0c9a5e755184ad20126f1cb59c0aca41be39
     dataAiHint: 'portable monitor',
     specs: [
       { name: 'Type', value: 'Portable Monitor', icon: 'Monitor' },
@@ -128,6 +156,10 @@ export const peripheralData: Product[] = [
     price: 12000.0,
     url: 'https://amzn.in/d/8uCb0lI',
     imageUrl: '/images/razer-basilisk-v3-pro.avif',
+<<<<<<< HEAD
+=======
+
+>>>>>>> f2ad0c9a5e755184ad20126f1cb59c0aca41be39
     dataAiHint: 'gaming mouse',
     specs: [
         { name: 'Type', value: 'Wireless Mouse', icon: 'Mouse' },
@@ -148,6 +180,10 @@ export const peripheralData: Product[] = [
     price: 3000.0,
     url: 'https://kreo-tech.com/collections/keys-to-victory/products/hive65-mechanical-gaming-keyboard-with-kreo-purple-switches',
     imageUrl: '/images/hive65_1-machanical-leyboard.avif',
+<<<<<<< HEAD
+=======
+
+>>>>>>> f2ad0c9a5e755184ad20126f1cb59c0aca41be39
     dataAiHint: 'mechanical keyboard',
     specs: [
         { name: 'Type', value: 'Mechanical Keyboard', icon: 'Keyboard' },
@@ -168,6 +204,10 @@ export const peripheralData: Product[] = [
     price: 3000.0,
     url: 'https://kreo-tech.com/products/arctik-laptop-cooler',
     imageUrl: '/images/Artboard1-cooling-pad.avif',
+<<<<<<< HEAD
+=======
+
+>>>>>>> f2ad0c9a5e755184ad20126f1cb59c0aca41be39
     dataAiHint: 'laptop cooler',
     specs: [
         { name: 'Type', value: 'Cooling Pad', icon: 'Fan' },

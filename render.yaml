@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: nextn-web
+    env: node
+    buildCommand: npm install && npm run build
+    startCommand: npm run start
+    envVars:
+      - key: GEMINI_API_KEY
+        fromSecret: gemini_api_key_secret
