@@ -134,12 +134,12 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                 <Card className="bg-card/80 backdrop-blur-sm">
                   <CardContent className="p-6">
                     <div className="grid md:grid-cols-2 gap-6">
-                      <div className="relative h-64 w-full rounded-lg overflow-hidden shadow-lg">
+                      <div className="relative h-64 w-full rounded-xl overflow-hidden shadow-2xl border border-gray-200 bg-white p-2">
                         <Image
                           src={featuredLaptop.imageUrl}
                           alt={featuredLaptop.name}
                           fill
-                          className="object-cover"
+                          className="object-contain"
                           data-ai-hint={featuredLaptop.dataAiHint}
                         />
                       </div>
